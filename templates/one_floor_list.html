@@ -189,15 +189,32 @@
                                 <tr>
                                     <td>{{ product.product_name }}</td>
                                     <td>{{ product.one_floor.one_floor_user.username }}</td>
-                                    <td>{{ product.one_floor.material_height }}*{{ product.one_floor.material_thickness }} {{ product.one_floor.material_type.material_name }}</td>
-                                    <td>{{ product.one_floor.power_time }} 秒</td>
-                                    <td>{{ product.one_floor.pulling_long }} 厘米</td>
+                                    <td>{% if product.one_floor.material_height %}
+                                    {{ product.one_floor.material_height }}{% else %}0{% endif %} *{% if product.one_floor.material_thickness %}{{ product.one_floor.material_thickness }}{% else %}0
+                                    {% endif %} {{ product.one_floor.material_type.material_name }}</td>
+                                    <td>{% if product.one_floor.power_time %}
+                                    {{ product.one_floor.power_time }}
+                                        {% else %}0
+                                    {% endif %}  秒</td>
+                                    <td>{% if  product.one_floor.pulling_long  %}
+                                    {{ product.one_floor.pulling_long }}
+                                        {% else %}0
+                                    {% endif %}  厘米</td>
                                     <td>{{ product.one_floor.shipment_num }} {% if product.one_floor.slice_company == 1 %}
                                         个{% elif product.one_floor.slice_company == 2 %}套{% endif %}</td>
-                                    <td>{{ product.one_floor.ton_num }} 片</td>
-                                    <td>{{ product.one_floor.ton_nums }} {% if product.one_floor.slice_company == 1 %}
+                                    <td>{% if  product.one_floor.ton_num  %}
+                                    {{ product.one_floor.ton_num }}
+                                        {% else %}0
+                                    {% endif %}  片</td>
+                                    <td>{% if product.one_floor.ton_nums %}
+                                    {{ product.one_floor.ton_nums }}
+                                        {% else %}0
+                                    {% endif %} {% if product.one_floor.slice_company == 1 %}
                                         个{% elif product.one_floor.slice_company == 2 %}套{% endif %}</td>
-                                    <td>{{ product.one_floor.ton_slice_time }} 小时</td>
+                                    <td>{% if product.one_floor.ton_slice_time %}
+                                    {{ product.one_floor.ton_slice_time }}
+                                        {% else %}0
+                                    {% endif %}小时</td>
                                     <td>
                                         <button href="#myModall{{ product.id }}" data-toggle="modal"
                                                 class="btn btn-primary btn-xs"><i class="icon-pencil"></i></button>
@@ -237,13 +254,13 @@
                                                     <div class="form-group">
                                                         <label for="exampleInputInfo">材料-宽(单位:毫米)</label>
                                                         <input type="text" class="form-control" value="{% if product.one_floor.material_height %}{{ product.one_floor.material_height }}{% endif %}"
-                                                               id="material_height{{ product.id }}"
+                                                               id="material_height{{ product.id }}" onblur="checkMaterialHeight(this.value, {{ product.id }})"
                                                                name="material_height{{ product.id }}" placeholder="材料-宽">
                                                     </div>
                                                 <div class="form-group">
                                                         <label for="exampleInputInfo">材料-厚度(单位:丝)</label>
                                                         <input type="text" class="form-control" value="{% if product.one_floor.material_thickness %}{{ product.one_floor.material_thickness }}{% endif %}"
-                                                               id="material_thickness{{ product.id }}"
+                                                               id="material_thickness{{ product.id }}" onblur="checkMaterialThickness(this.value, {{ product.id }})"
                                                                name="material_thickness{{ product.id }}" placeholder="材料-厚度">
                                                     </div>
                                                     <div class="form-group">
@@ -260,19 +277,19 @@
                                                 <div class="form-group">
                                                         <label for="exampleInputInfo">开机做片时间(单位:秒)</label>
                                                         <input type="text" class="form-control" value="{% if product.one_floor.power_time %}{{ product.one_floor.power_time }}{% endif %}"
-                                                               id="power_time{{ product.id }}"
+                                                               id="power_time{{ product.id }}" onblur="checkPowerTime(this.value, {{ product.id }})"
                                                                name="power_time{{ product.id }}" placeholder="开机做片时间">
                                                     </div>
                                                 <div class="form-group">
                                                         <label for="exampleInputInfo">拉片长度(单位:厘米)</label>
                                                         <input type="text" class="form-control" value="{% if product.one_floor.pulling_long %}{{ product.one_floor.pulling_long }}{% endif %}"
-                                                               id="pulling_long{{ product.id }}"
+                                                               id="pulling_long{{ product.id }}" onblur="checkPullingLong(this.value, {{ product.id }})"
                                                                name="pulling_long{{ product.id }}" placeholder="拉片长度">
                                                     </div>
                                                 <div class="form-group">
                                                         <label for="exampleInputInfo">每片出货数(单位:个/套)</label><br>
                                                         <input type="text" class="form-control" style="width: 250px;display: inline" value="{% if product.one_floor.shipment_num %}{{ product.one_floor.shipment_num }}{% endif %}"
-                                                               id="shipment_num{{ product.id }}"
+                                                               id="shipment_num{{ product.id }}" onchange="calculate_nums({{ product.id }})"
                                                                name="shipment_num{{ product.id }}" placeholder="每片出货数">
                                                         <select id="slice_company{{ product.id }}" name="slice_company{{ product.id }}" style="width: 250px;display: inline" class="form-control">
                                                             <option {% if product.one_floor.slice_company == 1 %}selected{% endif %} value="1">个</option>
@@ -327,7 +344,60 @@
 <script type="text/javascript" src="/static/assets/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
 <script type="text/javascript" src="/static/assets/ckeditor/ckeditor.js"></script>
 <script>
+    function checkMaterialHeight(MaterialHeight, id) {
+        if (!MaterialHeight) {
+            $('#ts' + id).text("材料-宽 不可为空");
+        }else {
+            $('#ts' + id).text("");
+        }
+    }
+    function checkMaterialThickness(MaterialThickness, id) {
+        if (!MaterialThickness) {
+            $('#ts' + id).text("材料-厚度 不可为空");
+        }else {
+            $('#ts' + id).text("");
+        }
+    }
+    function checkPowerTime(PowerTime, id) {
+        if (!PowerTime) {
+            $('#ts' + id).text("开机做片时间 不可为空");
+        }else {
+            $('#ts' + id).text("");
+        }
+    }
+    function checkPullingLong(PullingLong, id) {
+        if (!PullingLong) {
+            $('#ts' + id).text("拉片长度 不可为空");
+        }else {
+            $('#ts' + id).text("");
+        }
+    }
+    function checkShipmentNum(ShipmentNum, id) {
+        if (!ShipmentNum) {
+            $('#ts' + id).text("每片出货数 不可为空");
+        }else {
+            $('#ts' + id).text("");
+        }
+    }
+    function calculate_nums(id){
+        var material_height = $("#material_height" + id).val();
+        var material_thickness = $("#material_thickness" + id).val();
+        var power_time = $("#power_time" + id).val();
+        var pulling_long = $("#pulling_long" + id).val();
+        var shipment_num = $("#shipment_num" + id).val();
+        if (material_height && material_thickness  && power_time && pulling_long && shipment_num){
+             $('#ts' + id).text("");
+            var ton_num = (1000000 / (material_height / 10 * pulling_long * 1.4 * material_thickness / 1000)).toFixed(0);
+            var ton_nums = (ton_num * shipment_num).toFixed(0);
+            var ton_slice_time = (ton_num * power_time / 3600).toFixed(2);
+            $('#ton_num'+id).val(ton_num);
+            $('#ton_nums'+id).val(ton_nums);
+            $('#ton_slice_time'+id).val(ton_slice_time);
 
+        }else {
+           $('#ts' + id).text("必填数据 不可为空");
+        }
+    }
     function edit_member(id) {
         var formData = new FormData();
         {#var customer_name = $("#customer_name_id" + id).val();#}

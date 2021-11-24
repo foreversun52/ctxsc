@@ -257,7 +257,10 @@
                                         制作中{% elif product.product_status == 3 %}已完成{% endif %}</td>
                                     <td><img src="/media/{{ product.product_img }}" class="pic"
                                                                   height="80px" alt=""></td>
-                                <td>{{ product.finished_product.gross_profit }} 元</td>
+                                <td>{% if product.finished_product.gross_profit %}
+                                {{ product.finished_product.gross_profit }}
+                                    {% else %}0
+                                {% endif %}  元</td>
                                     <td>{{ product.p_create_date | safe }}</td>
                                     <td>
                                          <button href="#myModall{{ product.id }}" data-toggle="modal"
