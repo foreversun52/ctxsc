@@ -8,7 +8,7 @@
     <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <link rel="shortcut icon" href="/static/img/favicon.html">
 
-    <title>Basic Table</title>
+    <title>产品二楼操作流程列表</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -189,13 +189,27 @@
                                 <tr>
                                    <td>{{ product.product_name }}</td>
                                   <td>{{ product.two_floor.two_floor_user.username }}</td>
-                                  <td>{{ product.two_floor.knife_num }} 拼</td>
-                                  <td>{{ product.two_floor.bed_num }} 张</td>
-                                  <td>{{ product.two_floor.bed_yield }}万/{% if product.two_floor.bed_yield_comany == 1 %}个{% elif product.two_floor.bed_yield_comany == 2 %}套{% endif %}</td>
-                                  <td>{{ product.two_floor.bed_price }} 元/刀</td>
-                                  <td>{{ product.two_floor.two_packing_type.packing_name }}</td>
-                                    <td>{% if product.two_floor.packing_num_choices == 1 %}{{ product.two_floor.two_packing_num_one }}个*{{ product.two_floor.two_packing_num_two }}叠*{{ product.two_floor.two_packing_num_three }}条*{{ product.two_floor.two_packing_num_four }}层 /共计:{{ product.two_floor.two_packing_nums }}个{% elif product.two_floor.packing_num_choices == 2 %}{{ product.two_floor.packing_weight }}公斤{% endif %}</td>
-                                  <td>{{ product.two_floor.two_packing_price }} 元</td>
+                                  <td>{% if product.two_floor.knife_num %}
+                                  {{ product.two_floor.knife_num }} 拼
+                                  {% else %}{% endif %}</td>
+                                  <td>{% if product.two_floor.bed_num %}
+                                  {{ product.two_floor.bed_num }} 张
+                                  {% else %}{% endif %}</td>
+                                  <td>{% if product.two_floor.bed_yield %}
+                                  {{ product.two_floor.bed_yield }}万/{% if product.two_floor.bed_yield_comany == 1 %}个{% elif product.two_floor.bed_yield_comany == 2 %}套{% endif %}
+                                  {% else %}{% endif %}</td>
+                                  <td>{% if product.two_floor.bed_price %}
+                                  {{ product.two_floor.bed_price }} 元/刀
+                                  {% else %}{% endif %}</td>
+                                  <td>{% if product.two_floor.two_packing_type.packing_name %}
+                                  {{ product.two_floor.two_packing_type.packing_name }}
+                                      {% else %}{% endif %}</td>
+                                    <td>{% if product.two_floor.two_packing_num_one or product.two_floor.packing_weight %}
+                                    {% if product.two_floor.packing_num_choices == 1 %}{{ product.two_floor.two_packing_num_one }}个*{{ product.two_floor.two_packing_num_two }}叠*{{ product.two_floor.two_packing_num_three }}条*{{ product.two_floor.two_packing_num_four }}层 /共计:{{ product.two_floor.two_packing_nums }}个{% elif product.two_floor.packing_num_choices == 2 %}{{ product.two_floor.packing_weight }}公斤{% endif %}
+                                    {% else %}{% endif %}</td>
+                                  <td>{% if product.two_floor.two_packing_price %}
+                                   {{ product.two_floor.two_packing_price }} 元
+                                  {% endif %}</td>
                                     <td>
                                         <button href="#myModall{{ product.id }}" data-toggle="modal"
                                                 class="btn btn-primary btn-xs"><i class="icon-pencil"></i></button>

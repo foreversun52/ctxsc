@@ -8,7 +8,7 @@
     <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <link rel="shortcut icon" href="/static/img/favicon.html">
 
-    <title>Basic Table</title>
+    <title>产品三楼操作流程列表</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -186,10 +186,18 @@
                                 <tr>
                                   <td>{{ product.product_name }}</td>
                                   <td>{{ product.three_floor.three_floor_user.username }}</td>
-                                    <td>{{ product.three_floor.edge_price }} 元/个</td>
-                                  <td>{{ product.three_floor.three_packing_type.packing_name }}</td>
-                                    <td>{{ product.three_floor.three_packing_num_one }}个*{{ product.three_floor.three_packing_num_three }}叠*{{ product.three_floor.three_packing_num_three }}条*{{ product.three_floor.three_packing_num_four }}层 /共计:{{ product.three_floor.three_packing_nums }}个</td>
-                                  <td>{{ product.three_floor.three_packing_price }} 元</td>
+                                    <td>{% if product.three_floor.edge_price %}
+                                     {{ product.three_floor.edge_price }} 元/个
+                                    {% endif %}</td>
+                                  <td>{% if product.three_floor.three_packing_type.packing_name %}
+                                      {{ product.three_floor.three_packing_type.packing_name }}
+                                  {% endif %}</td>
+                                    <td>{% if product.three_floor.three_packing_num_one %}
+                                     {{ product.three_floor.three_packing_num_one }}个*{{ product.three_floor.three_packing_num_three }}叠*{{ product.three_floor.three_packing_num_three }}条*{{ product.three_floor.three_packing_num_four }}层 /共计:{{ product.three_floor.three_packing_nums }}个
+                                    {% endif %}</td>
+                                  <td>{% if product.three_floor.three_packing_price %}
+                                   {{ product.three_floor.three_packing_price }} 元
+                                  {% endif %}</td>
                                     <td>
                                         <button href="#myModall{{ product.id }}" data-toggle="modal"
                                                 class="btn btn-primary btn-xs"><i class="icon-pencil"></i></button>

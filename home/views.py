@@ -677,11 +677,17 @@ def edit_one_floor_info(request, pk):
                 pulling_long = request.POST.get('pulling_long', product_info.one_floor.pulling_long)
                 shipment_num = request.POST.get('shipment_num', product_info.one_floor.shipment_num)
                 slice_company = request.POST.get('slice_company', product_info.one_floor.slice_company)
+                ton_num = request.POST.get('ton_num', product_info.one_floor.ton_num)
+                ton_nums = request.POST.get('ton_nums', product_info.one_floor.ton_nums)
+                ton_slice_time = request.POST.get('ton_slice_time', product_info.one_floor.ton_slice_time)
 
                 if material_thickness and material_height and pulling_long and shipment_num and power_time:
-                    ton_num = int(1000000 / (float(material_height) / 10 * float(pulling_long) * 1.4 * float(material_thickness) / 1000))
-                    ton_nums = ton_num * float(shipment_num)
-                    ton_slice_time = round(ton_num * float(power_time) / 3600, 2)
+                    # _ton_num = int(1000000 / (float(material_height) / 10 * float(pulling_long) * 1.4 * float(material_thickness) / 1000))
+                    # _ton_nums = _ton_num * float(shipment_num)
+                    # _ton_slice_time = round(_ton_num * float(power_time) / 3600, 2)
+                    # print(ton_num,':',_ton_num)
+                    # print(ton_nums,':',_ton_nums)
+                    # print(ton_slice_time,':',_ton_slice_time)
                     update_one = models.OneFloor.objects.filter(pk=product_info.one_floor_id).update(material_height=material_height, material_thickness=material_thickness, material_type_id=material_id, power_time=power_time, pulling_long=pulling_long, shipment_num=shipment_num,slice_company=int(slice_company), ton_num=ton_num, ton_nums=ton_nums,ton_slice_time=ton_slice_time)
                     if update_one:
                         back_dic['msg'] = '修改成功'

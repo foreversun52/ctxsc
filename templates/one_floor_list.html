@@ -8,7 +8,7 @@
     <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <link rel="shortcut icon" href="/static/img/favicon.html">
 
-    <title>Basic Table</title>
+    <title>产品一楼操作流程列表</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -189,32 +189,32 @@
                                 <tr>
                                     <td>{{ product.product_name }}</td>
                                     <td>{{ product.one_floor.one_floor_user.username }}</td>
-                                    <td>{% if product.one_floor.material_height %}
-                                    {{ product.one_floor.material_height }}{% else %}0{% endif %} *{% if product.one_floor.material_thickness %}{{ product.one_floor.material_thickness }}{% else %}0
-                                    {% endif %} {{ product.one_floor.material_type.material_name }}</td>
+                                    <td>{% if product.one_floor.material_height and product.one_floor.material_thickness and product.one_floor.material_type.material_name %}
+                                        {{ product.one_floor.material_height }} * {{ product.one_floor.material_thickness }} {{ product.one_floor.material_type.material_name }}
+                                        {% else %}{% endif %}
+{#                                    {{ product.one_floor.material_height }}{% else %}0{% endif %} *{% if product.one_floor.material_thickness %}{{ product.one_floor.material_thickness }}{% else %}0#}
+                                    </td>
+{#                                    {% endif %} {{ product.one_floor.material_type.material_name }}</td>#}
                                     <td>{% if product.one_floor.power_time %}
-                                    {{ product.one_floor.power_time }}
-                                        {% else %}0
-                                    {% endif %}  秒</td>
+                                    {{ product.one_floor.power_time }} 秒
+                                        {% else %}{% endif %}</td>
                                     <td>{% if  product.one_floor.pulling_long  %}
-                                    {{ product.one_floor.pulling_long }}
-                                        {% else %}0
-                                    {% endif %}  厘米</td>
-                                    <td>{{ product.one_floor.shipment_num }} {% if product.one_floor.slice_company == 1 %}
-                                        个{% elif product.one_floor.slice_company == 2 %}套{% endif %}</td>
+                                    {{ product.one_floor.pulling_long }} 厘米
+                                        {% else %}{% endif %}</td>
+                                    <td>{% if product.one_floor.shipment_num %}
+                                    {{ product.one_floor.shipment_num }}{% if product.one_floor.slice_company == 1 %}
+                                        个{% elif product.one_floor.slice_company == 2 %}套{% endif %}
+                                        {% else %}{% endif %}</td>
                                     <td>{% if  product.one_floor.ton_num  %}
-                                    {{ product.one_floor.ton_num }}
-                                        {% else %}0
-                                    {% endif %}  片</td>
+                                    {{ product.one_floor.ton_num }} 片
+                                        {% else %}{% endif %}</td>
                                     <td>{% if product.one_floor.ton_nums %}
-                                    {{ product.one_floor.ton_nums }}
-                                        {% else %}0
-                                    {% endif %} {% if product.one_floor.slice_company == 1 %}
-                                        个{% elif product.one_floor.slice_company == 2 %}套{% endif %}</td>
+                                    {{ product.one_floor.ton_nums }}{% if product.one_floor.slice_company == 1 %}
+                                        个{% elif product.one_floor.slice_company == 2 %}套{% endif %}
+                                        {% else %}{% endif %} </td>
                                     <td>{% if product.one_floor.ton_slice_time %}
-                                    {{ product.one_floor.ton_slice_time }}
-                                        {% else %}0
-                                    {% endif %}小时</td>
+                                    {{ product.one_floor.ton_slice_time }} 小时
+                                        {% else %}{% endif %}</td>
                                     <td>
                                         <button href="#myModall{{ product.id }}" data-toggle="modal"
                                                 class="btn btn-primary btn-xs"><i class="icon-pencil"></i></button>
@@ -393,7 +393,7 @@
             $('#ton_num'+id).val(ton_num);
             $('#ton_nums'+id).val(ton_nums);
             $('#ton_slice_time'+id).val(ton_slice_time);
-
+            console.log("计算了");
         }else {
            $('#ts' + id).text("必填数据 不可为空");
         }
@@ -410,8 +410,9 @@
         var pulling_long = $("#pulling_long" + id).val();
         var slice_company = $("#slice_company" + id).val();
         var shipment_num = $("#shipment_num" + id).val();
-        {#var ton_num = $("#ton_num" + id).val();#}
-        {#var ton_slice_time = $("#ton_slice_time" + id).val();#}
+        var ton_num = $("#ton_num" + id).val();
+        var ton_nums = $('#ton_nums'+id).val();
+        var ton_slice_time = $("#ton_slice_time" + id).val();
         {#formData.append("customer_name", customer_name);#}
         formData.append("product_name", product_name);
         {#formData.append("one_floor", one_floor);#}
@@ -422,9 +423,12 @@
         formData.append("pulling_long", pulling_long);
         formData.append("slice_company", slice_company);
         formData.append("shipment_num", shipment_num);
-        {#formData.append("ton_num", ton_num);#}
-        {#formData.append("ton_slice_time", ton_slice_time);#}
-        $.ajax({
+        formData.append("ton_num", ton_num);
+        formData.append("ton_nums", ton_nums);
+        formData.append("ton_slice_time", ton_slice_time);
+        if (material_height && material_thickness  && power_time && pulling_long && shipment_num && ton_num && ton_nums && ton_slice_time){
+             $('#ts' + id).text("");
+            $.ajax({
             type: "POST",
             url: '/home/edit_one_floor_info/' + id + '/',
             data: formData,
@@ -440,6 +444,11 @@
                 }
             }
         })
+
+        }else {
+           $('#ts' + id).text("必填数据 不可为空");
+        }
+
         return false;
     }
 
